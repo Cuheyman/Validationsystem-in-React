@@ -152,8 +152,8 @@ function Register() {
                 <label htmlFor="password2">Gentag Password</label>
                 <input type="password" placeholder="" id="password2"ref={Password2Ref} />
                 <small>Error message</small>
-			  <hr style={{marginTop: '30px', marginBottom: '10px' , lineHeight: '0px', border: 'none', alignContent: 'center', width: '200px', borderBottom: 'dotted orange 7px' }}></hr>
               </div>
+			  <hr style={{marginTop: '30px', marginBottom: '10px' , lineHeight: '0px', border: 'none', alignContent: 'center', width: '200px', borderBottom: 'dotted orange 7px' }}></hr>
 
               <div className="form-control">
                 <label htmlFor="løsning">Choice Solution</label>
