@@ -1,8 +1,7 @@
 import logo from './img/cblogo.png';
 import React, { useRef, useState} from 'react';
 import { Helmet } from 'react-helmet';
-import $ from 'jquery';
-import  {useTranslation} from 'react-i18next';
+
 
 
 function Register() {
@@ -14,7 +13,7 @@ function Register() {
 		const PhoneRef = useRef(null);
 		const CvrRef = useRef(null);
 		const CompanynameRef = useRef(null);
-		const [language, setLanguage] = useState('en')
+	
 
 		function handleSubmit(e) {
 		e.preventDefault();
