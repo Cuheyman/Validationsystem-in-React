@@ -1,12 +1,16 @@
 import logo from './img/cblogo.png';
-import React, { useRef, useState} from 'react';
+import React, { useRef} from 'react';
 import { Helmet } from 'react-helmet';
 
 
 
+
+const $ = require('jquery');
+
+
 function Register() {
 		const formRef = useRef(null);
-		const UsernameRef = useRef(null);
+		
 		const EmailRef = useRef(null);
 		const PasswordRef = useRef(null);
 		const Password2Ref = useRef(null);
@@ -14,14 +18,13 @@ function Register() {
 		const CvrRef = useRef(null);
 		const CompanynameRef = useRef(null);
 	
-
-		function handleSubmit(e) {
-		e.preventDefault();
-		checkInputs();
-
-	}
+		
+		function openTerms () {
+			window.open('./Dokumenter/DPA.pdf' , '_blank' )
+		}
+		
 	function checkInputs() {
-		const usernameValue = UsernameRef.current.value.trim();
+		
 		const emailValue = EmailRef.current.value.trim();
 		const passwordValue = PasswordRef.current.value.trim();
 		const password2Value = Password2Ref.current.value.trim();
@@ -29,12 +32,6 @@ function Register() {
 		const cvrvalue = CvrRef.current.value.trim();
 		const companynamevalue = CompanynameRef.current.value.trim();
 	
-		if (usernameValue === '') {
-		  setErrorFor(UsernameRef.current, 'Username cannot be blank');
-		} else {
-		  setSuccessFor(UsernameRef.current);
-		}
-
 		if (phonevalue === '') {
 			setErrorFor(PhoneRef.current, 'Username cannot be blank');
 		  } else {
@@ -89,10 +86,84 @@ function Register() {
 		const formControl = input.parentElement;
 		formControl.className = 'form-control success';
 	  }
+	  
 	
 	  function isEmail(email) {
 		return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 	  }
+
+
+
+	  
+	  function handleFormSubmit(formData) {
+		const url = 'https://costbitswebapptest.azurewebsites.net/user';
+	  
+		// Convert form data to JSON
+		const data = JSON.stringify({
+		 
+		  websiteLink: formData.Phone,
+		  email: formData.Email,
+		  companyRegistrationNumber: formData.CvrRef,
+		  companyName: formData.CompanynameRef,
+		  password: formData.PasswordRef,
+		  choiceSolution: formData.løsning,
+		  eConomicAccessCode: formData.code,
+		  nonDisclosureAgreement: formData['checkbox-1'],
+		  dataProcessingAgreement: formData['checkbox-2'],
+		  termsAndConditions: formData['checkbox-3']
+		});
+	  
+		// Send the Fetch request with the form data as JSON
+
+
+
+		fetch(url, {
+		  method: 'POST',
+		  mode: 'cors',
+		  headers: {
+			'Content-Type': 'application/json'
+		  },
+		  body: data
+		})
+		.then(response => {
+		  if (response.ok) {
+			return console.log(response.json());	
+		  } else {
+			console.log('Error sending data');
+		  }
+		})
+		.catch(error => {
+		  
+		});
+	  }
+	  
+	  function handleSubmit(event) {
+		event.preventDefault();
+		checkInputs();
+
+	
+		// Get form data
+		const formData = {
+		  
+		  Phone: formRef.current.querySelector('#Number').value,
+		  Email: formRef.current.querySelector('#email').value,
+		  CvrRef: formRef.current.querySelector('#cvr').value,
+		  CompanynameRef: formRef.current.querySelector('#Vikname').value,
+		  PasswordRef: formRef.current.querySelector('#password').value,
+		  password2: formRef.current.querySelector('#password2').value,
+		  løsning: formRef.current.querySelector('#løsning').value,
+		  code: formRef.current.querySelector('.code').value,
+		  'checkbox-1': formRef.current.querySelector('#checkbox-1').checked,
+		  'checkbox-2': formRef.current.querySelector('#checkbox-2').checked,
+		  'checkbox-3': formRef.current.querySelector('#checkbox-3').checked
+		};
+	  
+	
+		// Handle form data
+		handleFormSubmit(formData);
+	  }
+
+	  
 
   return (
 		<>
@@ -111,9 +182,9 @@ function Register() {
             </div>
             <form id="form" className="form" onSubmit={handleSubmit} ref={formRef}>
               <div className="form-control">
-                <label htmlFor="Username">First and lastname</label>
+                {/* <label htmlFor="Username">First and lastname</label>
                 <input type="text" placeholder="" id="Username" ref={UsernameRef }/>
-                <small>Error message</small>
+                <small>Error message</small> */}
               </div>
 
               <div className="form-control">
@@ -176,24 +247,28 @@ function Register() {
               </div>
 
              
-							<div class="checkbox-section">
-				<div class="checkbox-item">
+			<div class="checkbox-section">
+				<div className="checkbox-item">
 					<input type="checkbox" id="checkbox-1" name="checkbox-1 " required/>
-					<label for="checkbox-1">I accept CostBits Non Disclosure Agreement</label>
-				</div>
-				<div class="checkbox-item">
-					<input type="checkbox" id="checkbox-2" name="checkbox-2" required/>
-					<label for="checkbox-2">I accept CostBits Data Processing Agreement</label> 
+					<label htmlFor="checkbox-1">I accept CostBits Non <span id='link1' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}>Disclosure Agreement</span></label>
 				</div>
 				<div class="checkbox-item">
 					<input type="checkbox" id="checkbox-3" name="checkbox-3" required />
-					<label for="checkbox-3">I accept terms and condtions</label>
+					<label htmlFor="checkbox-3">I accept Terms and <span id= 'link3' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}> Conditions</span></label>
 				</div>
+				<div class="checkbox-item">
+					<input type="checkbox" id="checkbox-2" name="checkbox-2" required/>
+					<label htmlFor="checkbox-2">I accept CostBits Data <span id='link2' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}>Processing Agreement</span></label> 
+				</div>
+				
+			
 				</div>
 
-				<button id="btn" style={{marginBottom: "20px"}}>Submit</button>
+				<button id="btn" style={{marginBottom: "20px"}}  >Submit</button>
 		
 		        </form>
+
+				<></>
 	                </div>
 				</body>
 				
@@ -203,7 +278,7 @@ function Register() {
 		
     )
   }
-// Company registration number
+
 
 export default Register
 
