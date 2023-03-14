@@ -96,38 +96,45 @@ function Register() {
 
 	  
 	  function handleFormSubmit(formData) {
-		const url = 'https://costbitswebapptest.azurewebsites.net/user';
+		const url = 'http://localhost:3000/';
 	  
 		// Convert form data to JSON
 		const data = JSON.stringify({
 		 
-		  websiteLink: formData.Phone,
-		  email: formData.Email,
-		  companyRegistrationNumber: formData.CvrRef,
-		  companyName: formData.CompanynameRef,
-		  password: formData.PasswordRef,
-		  choiceSolution: formData.løsning,
-		  eConomicAccessCode: formData.code,
-		  nonDisclosureAgreement: formData['checkbox-1'],
-		  dataProcessingAgreement: formData['checkbox-2'],
-		  termsAndConditions: formData['checkbox-3']
+			"name": formData.CompanynameRef,
+        "websiteUrl": formData.Phone,
+        "country": "",
+        "vatNum": formData.CvrRef,
+        "email": formData.Email,
+        "password": formData.PasswordRef,
+        "accessCode": formData.code,
+		  
+		 
 		});
-	  
-		// Send the Fetch request with the form data as JSON
+	// 	websiteLink: formData.Phone,
+	// 	email: formData.Email,
+	// 	companyRegistrationNumber: formData.CvrRef,
+	// 	companyName: formData.CompanynameRef,
+	// 	password: formData.PasswordRef,
+	// 	choiceSolution: formData.løsning,
+	// 	eConomicAccessCode: formData.code,
 
-
-
+	//    nonDisclosureAgreement: formData['checkbox-1'],
+	// 	  dataProcessingAgreement: formData['checkbox-2'],
+	// 	  termsAndConditions: formData['checkbox-3']
+		
 		fetch(url, {
 		  method: 'POST',
 		  mode: 'cors',
 		  headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json', 
+			
 		  },
 		  body: data
 		})
 		.then(response => {
 		  if (response.ok) {
-			return console.log(response.json());	
+				
 		  } else {
 			console.log('Error sending data');
 		  }
@@ -188,14 +195,14 @@ function Register() {
               </div>
 
               <div className="form-control">
-                <label htmlFor="Number">Website link</label>
+                <label htmlFor="Number">Websitelink</label>
                 <input type="text" placeholder="" id="Number" ref={PhoneRef}/>
                 <small>Error message</small>
               </div>
 
               <div className="form-control">
                 <label htmlFor="email">Email</label>
-                <input type="email" placeholder="" id="email" ref={EmailRef}/>
+                <input type="email" placeholder="" id="email" name= ''ref={EmailRef}/>
                 <small>Error message</small>
               </div>
 
