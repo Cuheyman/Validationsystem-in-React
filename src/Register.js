@@ -87,8 +87,6 @@ function Register() {
 		} else {
 		  setSuccessFor(PasswordRef.current);
 		}
-		påop();
-		påop2();
 	
 		if (password2Value === '') {
 		  setErrorFor(Password2Ref.current, 'Cannot be blank');
