@@ -1,6 +1,19 @@
 import logo from './img/cblogo.png';
 import React, { useRef} from 'react';
 import { Helmet } from 'react-helmet';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {Document, Page, pdfjs} from 'react-pdf';
+import nda from './docs/NDA.pdf';
+import saasa from './docs/SaaSA.pdf';
+import dpa from './docs/DPA.pdf';
+
+
+
+
+
+
+
+
 
 
 
@@ -9,51 +22,60 @@ const $ = require('jquery');
 
 
 function Register() {
+
+
+
+
+	
+
 		const formRef = useRef(null);
-		
 		const EmailRef = useRef(null);
 		const PasswordRef = useRef(null);
 		const Password2Ref = useRef(null);
-		const PhoneRef = useRef(null);
+		const websiteLinkRef = useRef(null);
 		const CvrRef = useRef(null);
 		const CompanynameRef = useRef(null);
 	
-		
-		function openTerms () {
-			window.open('./Dokumenter/DPA.pdf' , '_blank' )
-		}
-		
+
+
+		//   const openTerms = (event) => {
+		// 	event.preventDefault();
+		// 	 window.location.href = './NDA.pdf';
+		//   };
+
+
+	
 	function checkInputs() {
 		
 		const emailValue = EmailRef.current.value.trim();
 		const passwordValue = PasswordRef.current.value.trim();
 		const password2Value = Password2Ref.current.value.trim();
-		const phonevalue = PhoneRef.current.value.trim();
+		const websitelinkvalue = websiteLinkRef.current.value.trim();
 		const cvrvalue = CvrRef.current.value.trim();
 		const companynamevalue = CompanynameRef.current.value.trim();
 	
-		if (phonevalue === '') {
-			setErrorFor(PhoneRef.current, 'Username cannot be blank');
+		if (websitelinkvalue === '') {
+			setErrorFor(websiteLinkRef.current, 'Cannot be blank');
 		  } else {
-			setSuccessFor(PhoneRef.current);
+			setSuccessFor(websiteLinkRef.current);
 		  }
 
 		  
 		if (cvrvalue === '') {
-			setErrorFor(CvrRef.current, 'Username cannot be blank');
+			setErrorFor(CvrRef.current, 'Cannot be blank');
 		  } else {
 			setSuccessFor(CvrRef.current);
 		  }
 
 		  if (companynamevalue === '') {
-			setErrorFor(CompanynameRef.current, 'Username cannot be blank');
+			setErrorFor(CompanynameRef.current, 'Cannot be blank');
 		  } else {
 			setSuccessFor(CompanynameRef.current);
 		  }
 
 	
 		if (emailValue === '') {
-		  setErrorFor(EmailRef.current, 'Email cannot be blank');
+		  setErrorFor(EmailRef.current, 'Cannot be blank');
 		} else if (!isEmail(emailValue)) {
 		  setErrorFor(EmailRef.current, 'Not a valid email');
 		} else {
@@ -61,7 +83,7 @@ function Register() {
 		}
 	
 		if (passwordValue === '') {
-		  setErrorFor(PasswordRef.current, 'Password cannot be blank');
+		  setErrorFor(PasswordRef.current, 'Cannot be blank');
 		} else {
 		  setSuccessFor(PasswordRef.current);
 		}
@@ -96,33 +118,19 @@ function Register() {
 
 	  
 	  function handleFormSubmit(formData) {
-		const url = 'http://localhost:3000/';
+		const url = 'https://costbitswebapptest.azurewebsites.net/user';
 	  
 		// Convert form data to JSON
 		const data = JSON.stringify({
-		 
-			"name": formData.CompanynameRef,
-        "websiteUrl": formData.Phone,
-        "country": "",
-        "vatNum": formData.CvrRef,
-        "email": formData.Email,
-        "password": formData.PasswordRef,
-        "accessCode": formData.code,
-		  
-		 
-		});
-	// 	websiteLink: formData.Phone,
-	// 	email: formData.Email,
-	// 	companyRegistrationNumber: formData.CvrRef,
-	// 	companyName: formData.CompanynameRef,
-	// 	password: formData.PasswordRef,
-	// 	choiceSolution: formData.løsning,
-	// 	eConomicAccessCode: formData.code,
 
-	//    nonDisclosureAgreement: formData['checkbox-1'],
-	// 	  dataProcessingAgreement: formData['checkbox-2'],
-	// 	  termsAndConditions: formData['checkbox-3']
-		
+
+		"Name":formData.CompanynameRef,
+		"WebsiteUrl": formData.WebsiteLink,
+		"VatNum" : formData.CvrRef,
+		"Email": formData.Email,
+		"Password": formData.PasswordRef,
+		"AccessCode" :  formData.code,
+		}); 
 		fetch(url, {
 		  method: 'POST',
 		  mode: 'cors',
@@ -134,7 +142,8 @@ function Register() {
 		})
 		.then(response => {
 		  if (response.ok) {
-				
+				console.log('it has been sent')	
+				console.log(data)
 		  } else {
 			console.log('Error sending data');
 		  }
@@ -147,12 +156,13 @@ function Register() {
 	  function handleSubmit(event) {
 		event.preventDefault();
 		checkInputs();
+		formRef.current.reset()
 
 	
 		// Get form data
 		const formData = {
 		  
-		  Phone: formRef.current.querySelector('#Number').value,
+		  WebsiteLink: formRef.current.querySelector('#link').value,
 		  Email: formRef.current.querySelector('#email').value,
 		  CvrRef: formRef.current.querySelector('#cvr').value,
 		  CompanynameRef: formRef.current.querySelector('#Vikname').value,
@@ -194,47 +204,51 @@ function Register() {
                 <small>Error message</small> */}
               </div>
 
-              <div className="form-control">
-                <label htmlFor="Number">Websitelink</label>
-                <input type="text" placeholder="" id="Number" ref={PhoneRef}/>
+			  <div className="form-control">
+                <label htmlFor="Vikname">Company Name</label>
+                <input type="text" placeholder="" id="Vikname" ref={CompanynameRef} name= "Vikname"/>
                 <small>Error message</small>
               </div>
 
               <div className="form-control">
-                <label htmlFor="email">Email</label>
-                <input type="email" placeholder="" id="email" name= ''ref={EmailRef}/>
+                <label htmlFor="link">Company Website</label>
+                <input type="text" placeholder="" id="link" ref={websiteLinkRef} name="link"/>
                 <small>Error message</small>
               </div>
+
 
               <div className="form-control">
                 <label htmlFor="cvr">Company Registration Number</label>
-                <input type="text" placeholder="" id="cvr" ref={CvrRef}/>
+                <input type="text" placeholder="" id="cvr" ref={CvrRef} name="cvr"/>
                 <small>Error message</small>
               </div>
 
-              <div className="form-control">
-                <label htmlFor="Vikname">Company Name</label>
-                <input type="text" placeholder="" id="Vikname" ref={CompanynameRef} />
-                <small>Error message</small>
-              </div>
+
+				<div className="form-control">
+						<label htmlFor="email">Email</label>
+						<input type="email" placeholder="" id="email" name= "email" ref={EmailRef}/>
+						<small>Error message</small>
+					</div>
+
+          
 			  <hr style={{marginTop: '30px', marginBottom: '10px' , lineHeight: '0px', border: 'none', alignContent: 'center', width: '200px', borderBottom: 'dotted orange 7px' }}></hr>
 
               <div className="form-control">
                 <label htmlFor="password">Password</label>
-                <input type="password" placeholder="" id="password" ref={PasswordRef} />
+                <input type="password" placeholder="" id="password" ref={PasswordRef} name= "password" />
                 <small>Error message</small>
               </div>
 
               <div className="form-control">
-                <label htmlFor="password2">Gentag Password</label>
-                <input type="password" placeholder="" id="password2"ref={Password2Ref} />
+                <label htmlFor="password2">Confirm Password</label>
+                <input type="password" placeholder="" id="password2"ref={Password2Ref}/>
                 <small>Error message</small>
               </div>
 			  <hr style={{marginTop: '30px', marginBottom: '10px' , lineHeight: '0px', border: 'none', alignContent: 'center', width: '200px', borderBottom: 'dotted orange 7px' }}></hr>
 
               <div className="form-control">
-                <label htmlFor="løsning">Choice Solution</label>
-                <input type="text" id="løsning" list="løsning1" required />
+                <label htmlFor="løsning">Choice Your Finance System</label>
+                <input type="text" id="løsning" list="løsning1" required  name='solution'/>
                 <datalist id="løsning1">
                   <option value="Demo 0dkk" />
                   <option value="Demo 12dkk" />
@@ -246,7 +260,7 @@ function Register() {
 					2.Open this link: https://secure.e-conomic.com <br></br>
 					3.Press connect with e-conomic <br></br>
 					4.Copy the code and enter it here <br></br>
-					<input className='code' style={{borderStyle: 'solid #f0f0f0 2px;'}}></input>
+					<input className='code' id = "code"  name= "code" style={{borderStyle: 'solid #f0f0f0 2px;'}}></input>
 
 				</label>
 			  <hr style={{marginTop: '30px', marginBottom: '10px' , lineHeight: '0px', border: 'none', alignContent: 'center', width: '200px', borderBottom: 'dotted orange 7px' }}></hr>
@@ -254,18 +268,27 @@ function Register() {
               </div>
 
              
+
+
+
+
+				
 			<div class="checkbox-section">
+			
 				<div className="checkbox-item">
-					<input type="checkbox" id="checkbox-1" name="checkbox-1 " required/>
-					<label htmlFor="checkbox-1">I accept CostBits Non <span id='link1' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}>Disclosure Agreement</span></label>
+					<input type="checkbox" id="checkbox-1" name="checkbox-1 " />
+					<label htmlFor="checkbox-1">I accept CostBits Non <a  href={nda} target= '_blank' id='link1'  style={{color: 'blue', textDecoration: 'underline'}}>Disclosure Agreement</a></label>
 				</div>
-				<div class="checkbox-item">
-					<input type="checkbox" id="checkbox-3" name="checkbox-3" required />
-					<label htmlFor="checkbox-3">I accept Terms and <span id= 'link3' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}> Conditions</span></label>
+
+			<div class="checkbox-item">
+					<input type="checkbox" id="checkbox-2" name="checkbox-2" />
+					<label htmlFor="checkbox-2">I accept CostBits Data <a  href={saasa} target= '_blank'id='link2'   style={{color: 'blue', textDecoration: 'underline'}}>Processing Agreement</a></label> 
 				</div>
+				
 				<div class="checkbox-item">
-					<input type="checkbox" id="checkbox-2" name="checkbox-2" required/>
-					<label htmlFor="checkbox-2">I accept CostBits Data <span id='link2' onClick={openTerms} style={{color: 'blue', textDecoration: 'underline'}}>Processing Agreement</span></label> 
+					<input type="checkbox" id="checkbox-3" name="checkbox-3"  />
+					<label htmlFor="checkbox-3">I accept Terms and <a href={dpa} target= '_blank' id= 'link3'  style={{color: 'blue', textDecoration: 'underline'}}> Conditions</a></label>
+				
 				</div>
 				
 			
